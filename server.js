@@ -3,7 +3,8 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const compression = require("compression");
 
-const PORT = 3000;
+// sets up port for Heroku otherwise localhost 8080
+const PORT = process.env.PORT || 8080;
 
 const app = express();
 
@@ -15,9 +16,14 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/budget", {
-  useNewUrlParser: true,
-  useFindAndModify: false
+// the following methods are deprecated
+// https://mongoosejs.com/docs/deprecations.html
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/budget';
+mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true
 });
 
 // routes
